@@ -25,6 +25,7 @@ mongoose.connect(uristring, function(err) {
 require('./models/Posts');
 require('./models/Comments');
 require('./models/Users');
+require('./models/Payments');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');

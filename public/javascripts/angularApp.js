@@ -42,6 +42,10 @@ app.config([
 				$state.go('home');
 			}
 		}]
+	}).state('payment', {
+		url: '/payment',
+		templateUrl: '/payment.html',
+		controller: 'PayCtrl'
 	});
 
 	$urlRouterProvider.otherwise('home');
@@ -196,11 +200,34 @@ app.factory('posts', ['$http', 'auth', function($http, auth) {
 
 }]);
 
+app.factory('pay', ['$http', 'auth', function($http, auth) {
+
+	var factory = {};
+
+	/* factory.payment = function() {
+		return $http.get('/payments').success(function(data) {
+			angular.copy(data, factory.payments);
+		});
+	};
+	*/
+	factory.charge = function(payment) {
+		return $http.post('/payments', payment, {
+			headers: {Authorization: 'Bearer '+ auth.getToken()}
+		}).success(function(data){
+			factory.payments.push(data);
+		});
+	};
+
+
+	return factory;
+
+}]);
+
 app.controller('MainCtrl', [
 	'$scope',
 	'posts',
 	function($scope, posts) {
-		$scope.test = '\'allo!';
+		$scope.test = 'Hello!';
 
 		$scope.posts = posts.posts;
 
@@ -252,6 +279,30 @@ app.controller('MainCtrl', [
 			posts.downvoteComment(post, comment);
 		};
 	}
+]).controller('PayCtrl', [
+	'$scope',
+	'payments',
+	function($scope, payments) {
+		$scope.payments = {};
+
+		$scope.payments = payments.payments;
+
+		$scope.charge = function() {
+			if (!$scope.amt) {
+				return;
+			}
+			payments.charge({
+				ccno: $scope.ccno,
+				ccv: $scope.ccv,
+				amt: $scope.amt,
+				exp: $scope.exp
+			});
+			$scope.ccno = '';
+			$scope.ccv = '';
+			$scope.amt = '';
+			$scope.exp = '';
+		};
+	}
 ]).controller('AuthCtrl', [
 	'$scope',
 	'$state',
@@ -275,7 +326,8 @@ app.controller('MainCtrl', [
 			});
 		};
 	}
-]).controller('NavCtrl', [
+])
+.controller('NavCtrl', [
 	'$scope',
 	'auth',
 	function($scope, auth) {

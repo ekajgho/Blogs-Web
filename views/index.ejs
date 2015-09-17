@@ -19,6 +19,9 @@
 				<li>
 					<a href="#/">Blogs</a>
 				</li>
+				<li>
+					<a href="/#/payment">Payments</a>
+				</li>
 				<li ng-show="isLoggedIn()">
 					<a>{{ currentUser() }}</a>
 				</li>
@@ -135,7 +138,7 @@
 
 <script type="text/ng-template" id="/login.html">
 	<div class="page-header">
-		<h1>Blogs</h1>
+		<h1>Login</h1>
 	</div>
 
 	<div ng-show="error" class="alert alert-danger row">
@@ -154,6 +157,37 @@
 		<button type="submit" class="btn btn-primary">Log In</button>
 	</form>
 </script>
+
+<script type="text/ng-template" id="/payment.html">
+	<div class="page-header">
+		<h1>Payment</h1>
+	</div>
+
+	<div ng-show="error" class="alert alert-danger row">
+		<span>{{ error.toString() }}</span>
+	</div>
+
+	<form ng-submit="charge()" style="margin-top:30px;">
+		<h3>Payment</h3>
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="Card Holder Name" ng-model="payment.name"></input>
+		</div>		
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="Card Number" ng-model="payment.ccno"></input>
+		</div>
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="CCV" ng-model="payment.ccv"></input>
+		</div>
+		<div class="form-group">
+			<input type="text" class="form-control" placeholder="Expiration (MM/YYYY)" ng-model="payment.exp"></input>
+		</div>
+		<div class="form-group">
+			<input type="password" class="form-control" placeholder="amount" ng-model="payment.amt"></input>
+		</div>
+		<button type="submit" class="btn btn-primary">submit</button>
+	</form>
+</script>
+
 
 </body>
 

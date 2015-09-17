@@ -5,7 +5,9 @@ var express = require('express'),
 	Comment= mongoose.model('Comment'),
 	passport = require('passport'),
 	User = mongoose.model('User'),
+	Payment = mongoose.model('Payment'),
 	jwt = require('express-jwt'),
+	stripe = require('stripe')("pk_test_PfbwrHKalbBdzS6n3z4zF6ep"),
 	auth = jwt({
 		secret: 'SEACREST', // Use an environment var!
 		userProperty: 'payload'
@@ -199,5 +201,26 @@ router.post('/login', function(req, res, next) {
 
 	})(req, res, next);
 });
+
+router.post('/charge', function(req, res) {
+  
+  var stripeToken = req.body.stripeToken;
+
+  var charge = stripe.charges.create({
+    amount: 2000,
+    currency: 'usd',
+    card: stripeToken,
+    description: 'One time deposit for payinguser@example.com'
+  }, function(err, charge) {
+  		if (err && err.type === 'StripeCardError') {
+			// The card has been declined
+			return next(err);
+		} else {
+			//Render a thank you page called "Charge"
+			res.render('charge', { title: 'Charge' });
+		}
+  });
+});
+
 
 module.exports = router;
